@@ -126,29 +126,45 @@ export default function About() {
         >
           {/* Glass Orb container with physical layered shadows */}
           <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full flex items-center justify-center">
-            {/* Ambient Back Glow */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyber-neon/20 via-cyber-magenta/20 to-white/10 blur-[30px] animate-pulse-slow" />
+            {/* Ambient Back Glow - Amplified for beautiful aura look */}
+            <div className="absolute -inset-4 rounded-full bg-gradient-to-tr from-cyber-purple/50 via-cyber-neon/40 to-cyber-magenta/30 blur-[40px] opacity-80 animate-pulse-slow" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyber-neon/30 via-cyber-purple/20 to-white/10 blur-[20px] opacity-90" />
+
+            {/* Glowing Ring Aura (Solid thin outer neon ring) */}
+            <div className="absolute -inset-1.5 rounded-full border border-cyber-neon/40 shadow-[0_0_20px_rgba(0,242,254,0.35)] animate-pulse-slow pointer-events-none" />
 
             {/* Moving refraction helper circles */}
             <motion.div
               animate={{
                 rotate: [0, 360],
-                scale: [1, 1.05, 1],
+                scale: [1, 1.08, 1],
               }}
               transition={{
-                duration: 12,
+                duration: 16,
                 repeat: Infinity,
                 ease: "linear",
               }}
-              className="absolute -inset-2 rounded-full border border-dashed border-cyber-neon/20"
+              className="absolute -inset-4 rounded-full border border-dashed border-cyber-neon/35 opacity-70 pointer-events-none"
+            />
+            <motion.div
+              animate={{
+                rotate: [360, 0],
+                scale: [1.05, 0.95, 1.05],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="absolute -inset-6 rounded-full border border-dotted border-cyber-magenta/25 opacity-50 pointer-events-none"
             />
 
             {/* Liquid Glass Orb */}
             <div
-              className="absolute inset-0 rounded-full border border-white/20 bg-gradient-to-tr from-cyber-purple/50 via-white/5 to-white/15 backdrop-blur-3xl shadow-[0_15px_45px_rgba(0,0,0,0.6),_inset_0_2px_4px_rgba(255,255,255,0.4),_inset_0_-10px_30px_rgba(138,63,252,0.15)] overflow-hidden flex items-center justify-center group"
+              className="absolute inset-0 rounded-full border-2 border-white/40 bg-gradient-to-tr from-cyber-purple/40 via-white/5 to-white/20 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.85),_inset_0_4px_8px_rgba(255,255,255,0.55),_inset_0_-12px_40px_rgba(138,63,252,0.35),_0_0_30px_rgba(138,63,252,0.25)] overflow-hidden flex items-center justify-center group"
             >
               {/* Inner diagonal sweeping sheen */}
-              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-10 pointer-events-none" />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-10 pointer-events-none" />
 
               {/* The "Profile Image" (Local image with high-fidelity vector illustration fallback) */}
               {!imageError ? (

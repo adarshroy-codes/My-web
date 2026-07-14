@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import { ArrowDown, Code2, Gamepad2, ArrowRight } from "lucide-react";
 import BlackHole from "./BlackHole";
 import GlassOrb from "./GlassOrb";
-import PrismShard from "./PrismShard";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -87,20 +86,6 @@ export default function Hero() {
         parallaxFactor={0.25}
         className="-right-12 sm:-right-24 bottom-[15%] pointer-events-none opacity-45 mix-blend-screen z-0"
         delay={0.35}
-      />
-
-      {/* Floating Prismatic crystal shards */}
-      <PrismShard
-        size={300}
-        parallaxFactor={0.12}
-        className="-left-24 sm:-left-48 top-[40%] opacity-80 z-0"
-        delay={0.25}
-      />
-      <PrismShard
-        size={220}
-        parallaxFactor={0.22}
-        className="-right-16 sm:-right-36 top-[25%] opacity-75 z-0"
-        delay={0.45}
       />
 
       {/* Floating Glass Particles */}
@@ -338,7 +323,45 @@ export default function Hero() {
             twasy
           </motion.h1>
 
-          {/* 4. Elegant Glass Sparkle Glow (Fires when hovered!) */}
+          {/* 4. Clipped Sphere - Highly Refractive Glowing Interior (Inside the Black Hole) */}
+          <motion.h1
+            animate={{
+              scale: isHovered ? 1.05 : 1,
+            }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            className="absolute inset-0 font-glass-script text-[20vw] sm:text-[15rem] leading-[1.1] select-none z-30 flex items-center justify-center clipped-sphere pointer-events-none"
+            style={{
+              color: isHovered ? "rgba(0, 242, 254, 0.5)" : "rgba(0, 242, 254, 0.25)",
+              filter: "url(#glass-specular)",
+              WebkitTextStroke: isHovered ? "2px #00f2fe" : "1.2px #00f2fe",
+              textTransform: "none",
+              transition: "color 0.3s ease, WebkitTextStroke 0.3s ease",
+            }}
+          >
+            twasy
+          </motion.h1>
+
+          {/* 5. Clipped Sphere - High-Voltage Outer Edge Glow & Aura (Touching/Intersecting the Circle boundary) */}
+          <motion.h1
+            animate={{
+              scale: isHovered ? 1.05 : 1,
+            }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            className="absolute inset-0 font-glass-script text-[20vw] sm:text-[15rem] leading-[1.1] pointer-events-none z-30 flex items-center justify-center select-none clipped-sphere"
+            style={{
+              color: "transparent",
+              WebkitTextStroke: isHovered ? "3.2px #e04bff" : "2.2px #e04bff",
+              textTransform: "none",
+              textShadow: isHovered 
+                ? "0 0 25px rgba(224, 75, 255, 0.95), 0 0 50px rgba(0, 242, 254, 0.9)" 
+                : "0 0 12px rgba(224, 75, 255, 0.6), 0 0 25px rgba(0, 242, 254, 0.55)",
+              transition: "WebkitTextStroke 0.3s ease, text-shadow 0.3s ease",
+            }}
+          >
+            twasy
+          </motion.h1>
+
+          {/* 6. Elegant Glass Sparkle Glow (Fires when hovered!) */}
           <motion.div
             animate={{
               opacity: isHovered ? 1 : 0,

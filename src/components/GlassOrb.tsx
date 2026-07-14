@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import React, { useState, useRef } from "react";
+import { motion, useMotionValue, useSpring, useScroll, useTransform } from "motion/react";
 
 interface GlassOrbProps {
   size?: number;
@@ -19,8 +19,9 @@ export default function GlassOrb({
   const [isHovered, setIsHovered] = useState(false);
   const orbRef = useRef<HTMLDivElement>(null);
 
-  // Parallax displacement state
-  const [scrollY, setScrollY] = useState(0);
+  // High performance scrolling using Motion Values
+  const { scrollY } = useScroll();
+  const translateY = useTransform(scrollY, (latest) => -latest * parallaxFactor);
 
   // Motion values for smooth mouse tilt
   const rotateX = useMotionValue(0);
@@ -33,56 +34,31 @@ export default function GlassOrb({
   const springTransX = useSpring(transX, { stiffness: 50, damping: 18 });
   const springTransY = useSpring(transY, { stiffness: 50, damping: 18 });
 
-  useEffect(() => {
-    // 1. Scroll Parallax listener
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+  // Handle local mouse move (runs only on the active hovered element, avoiding layout thrashing)
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!orbRef.current) return;
+    const rect = orbRef.current.getBoundingClientRect();
+    
+    // Check if mouse is near or on the orb (within 1.5x size of boundary)
+    const orbCenterX = rect.left + rect.width / 2;
+    const orbCenterY = rect.top + rect.height / 2;
+    const dx = e.clientX - orbCenterX;
+    const dy = e.clientY - orbCenterY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // 2. Local mouse move listener for highly interactive hover tilting
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!orbRef.current) return;
-      const rect = orbRef.current.getBoundingClientRect();
-      
-      // Check if mouse is near or on the orb (within 2x size of boundary)
-      const orbCenterX = rect.left + rect.width / 2;
-      const orbCenterY = rect.top + rect.height / 2;
-      const dx = e.clientX - orbCenterX;
-      const dy = e.clientY - orbCenterY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+    const activeRadius = size * 1.5;
 
-      const activeRadius = size * 1.5;
+    // High fidelity tilt calculations
+    const strength = 1 - Math.min(distance / activeRadius, 1); // 1 at center, 0 at outer boundary
+    const maxTilt = 22; // Degrees
+    const maxShift = 18; // Pixels
 
-      if (distance < activeRadius) {
-        // High fidelity tilt calculations
-        const strength = 1 - distance / activeRadius; // 1 at center, 0 at outer boundary
-        const maxTilt = 22; // Degrees
-        const maxShift = 18; // Pixels
+    rotateX.set((dy / activeRadius) * -maxTilt * strength);
+    rotateY.set((dx / activeRadius) * maxTilt * strength);
 
-        rotateX.set((dy / activeRadius) * -maxTilt * strength);
-        rotateY.set((dx / activeRadius) * maxTilt * strength);
-
-        transX.set((dx / activeRadius) * maxShift * strength);
-        transY.set((dy / activeRadius) * maxShift * strength);
-      } else {
-        rotateX.set(0);
-        rotateY.set(0);
-        transX.set(0);
-        transY.set(0);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [size, rotateX, rotateY, transX, transY]);
-
-  // Apply parallax shift relative to current scroll offset
-  const parallaxOffset = scrollY * parallaxFactor;
+    transX.set((dx / activeRadius) * maxShift * strength);
+    transY.set((dy / activeRadius) * maxShift * strength);
+  };
 
   return (
     <motion.div
@@ -94,6 +70,7 @@ export default function GlassOrb({
         scale: { type: "spring", stiffness: 80, damping: 15 },
       }}
       onMouseEnter={() => setIsHovered(true)}
+      onMouseMove={handleMouseMove}
       onMouseLeave={() => {
         setIsHovered(false);
         rotateX.set(0);
@@ -110,7 +87,7 @@ export default function GlassOrb({
         y: springTransY,
         transformStyle: "preserve-3d",
         perspective: 1200,
-        translateY: -parallaxOffset, // Parallax vertical scrolling
+        translateY: translateY, // Parallax vertical scrolling
       }}
       className={`absolute select-none z-10 filter hover:brightness-110 transition-all duration-300 pointer-events-auto ${className}`}
     >
@@ -122,9 +99,9 @@ export default function GlassOrb({
         <defs>
           {/* Ambient Outer Halo Glow */}
           <radialGradient id={`chroma-glow-${size}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(138, 63, 252, 0.35)" />
-            <stop offset="50%" stopColor="rgba(0, 242, 254, 0.12)" />
-            <stop offset="75%" stopColor="rgba(224, 75, 255, 0.05)" />
+            <stop offset="0%" stopColor="rgba(138, 63, 252, 0.55)" />
+            <stop offset="50%" stopColor="rgba(0, 242, 254, 0.3)" />
+            <stop offset="75%" stopColor="rgba(224, 75, 255, 0.18)" />
             <stop offset="100%" stopColor="rgba(0, 0, 0, 0)" />
           </radialGradient>
 
@@ -155,9 +132,9 @@ export default function GlassOrb({
 
           {/* Volumetric Dark Core Density Mask */}
           <radialGradient id={`dark-core-${size}`} cx="45%" cy="45%" r="50%">
-            <stop offset="0%" stopColor="rgba(2, 1, 5, 1)" />
-            <stop offset="70%" stopColor="rgba(6, 4, 12, 0.93)" />
-            <stop offset="88%" stopColor="rgba(138, 63, 252, 0.18)" />
+            <stop offset="0%" stopColor="rgba(2, 1, 5, 0.15)" />
+            <stop offset="70%" stopColor="rgba(6, 4, 12, 0.12)" />
+            <stop offset="88%" stopColor="rgba(138, 63, 252, 0.45)" />
             <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
           </radialGradient>
 
@@ -174,11 +151,11 @@ export default function GlassOrb({
 
         {/* 2. Physical Glass Sphere Container Group */}
         <g>
-          {/* Base Dense Glass Core */}
-          <circle cx="250" cy="250" r="172" fill="#030206" />
+          {/* Base Dense Glass Core - highly transparent */}
+          <circle cx="250" cy="250" r="172" fill="rgba(8, 6, 12, 0.12)" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="1" />
 
           {/* Red/Orange Chromatic bleeding layer */}
-          <circle cx="250" cy="250" r="171" stroke={`url(#orange-rim-${size})`} strokeWidth="11" fill="none" filter="blur(4px)" opacity="0.85" />
+          <circle cx="250" cy="250" r="171" stroke={`url(#orange-rim-${size})`} strokeWidth="11" fill="none" filter="blur(4px)" opacity="0.65" />
 
           {/* 3D Glass volumetric shadows */}
           <circle cx="250" cy="250" r="168" fill={`url(#dark-core-${size})`} />
@@ -272,11 +249,14 @@ export default function GlassOrb({
             filter="blur(6px)"
           />
 
-          {/* Secondary dark vignette layer for total occlusion inside */}
-          <circle cx="250" cy="250" r="132" fill="rgba(2, 1, 4, 0.7)" filter="blur(9px)" />
+          {/* Secondary dark vignette layer for total occlusion inside - transparent */}
+          <circle cx="250" cy="250" r="132" fill="rgba(2, 1, 4, 0.05)" filter="blur(9px)" />
 
-          {/* Specular glare dot on the very top of the sphere */}
-          <circle cx="210" cy="140" r="10" fill="rgba(255, 255, 255, 0.35)" filter="blur(1.5px)" />
+          {/* Specular glare dot on the very top of the sphere - much brighter and adding a secondary reflection */}
+          <circle cx="210" cy="140" r="12" fill="rgba(255, 255, 255, 0.8)" filter="blur(1px)" />
+          <circle cx="205" cy="135" r="5" fill="#ffffff" />
+          {/* Crescent-like glassy highlight reflection on the right bottom rim */}
+          <path d="M 320 320 A 100 100 0 0 1 325 240" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="4" strokeLinecap="round" fill="none" filter="blur(1px)" />
         </g>
 
         {/* 4. Film grain texture overlay */}

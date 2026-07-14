@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Background from "./components/Background";
-import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -62,9 +61,6 @@ export default function App() {
           >
             {/* 1. Custom Interactive Canvas Background */}
             <Background />
-
-            {/* 2. Custom Trailing Cursor Halo (Touch-safe, runs on mouse client) */}
-            <CustomCursor />
 
             {/* 3. Floating Refractive Glass Navbar */}
             <Navbar activeSection={activeSection} />

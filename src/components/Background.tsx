@@ -1,15 +1,5 @@
 import { useEffect, useRef } from "react";
 
-interface Bubble {
-  x: number;
-  y: number;
-  r: number;
-  speed: number;
-  amplitude: number;
-  frequency: number;
-  phase: number;
-  opacity: number;
-}
 
 interface Star {
   x: number;
@@ -72,17 +62,6 @@ export default function Background() {
       };
     });
 
-    // Initialize floating glass bubbles
-    const bubbles: Bubble[] = Array.from({ length: 15 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height + height,
-      r: Math.random() * 25 + 8,
-      speed: Math.random() * 0.4 + 0.2,
-      amplitude: Math.random() * 30 + 10,
-      frequency: Math.random() * 0.002 + 0.001,
-      phase: Math.random() * Math.PI * 2,
-      opacity: Math.random() * 0.4 + 0.1,
-    }));
 
     // Handle resizing
     const handleResize = () => {
@@ -195,29 +174,41 @@ export default function Background() {
         gradient.addColorStop(0.85, aurora.color3);
         gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = aurora.height;
-        ctx.lineCap = "round";
-        
-        // Use standard canvas blur filter for seamless glowing organic light curtains
-        ctx.filter = "blur(48px)";
-
-        ctx.beginPath();
+        // Pre-calculate the points of the aurora line to avoid redundant math in drawing passes
+        const points: { x: number; y: number }[] = [];
         for (let x = -40; x <= width + 40; x += 20) {
-          // Compound waves for highly realistic organic movement
           const wave1 = Math.sin(x * aurora.wavelength + time * aurora.speed) * aurora.amplitude;
           const wave2 = Math.cos(x * 0.001 + time * aurora.speed * 1.6) * (aurora.amplitude * 0.4);
-          
-          // Apply mouse vertical parallax to the aurora
           const y = aurora.yOffset + wave1 + wave2 + mouse.y * 35;
-          
-          if (x === -40) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
+          points.push({ x, y });
         }
-        ctx.stroke();
+
+        // Draw multiple passes with varying widths and opacities to simulate a smooth, gorgeous volumetric glow
+        const glowPasses = [
+          { width: aurora.height * 1.5, alpha: 0.12 },
+          { width: aurora.height * 0.9, alpha: 0.22 },
+          { width: aurora.height * 0.45, alpha: 0.38 },
+          { width: aurora.height * 0.15, alpha: 0.55 }
+        ];
+
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        glowPasses.forEach((pass) => {
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = pass.width;
+          ctx.globalAlpha = pass.alpha;
+
+          ctx.beginPath();
+          points.forEach((pt, index) => {
+            if (index === 0) {
+              ctx.moveTo(pt.x, pt.y);
+            } else {
+              ctx.lineTo(pt.x, pt.y);
+            }
+          });
+          ctx.stroke();
+        });
       });
       ctx.restore();
 
@@ -313,101 +304,6 @@ export default function Background() {
       }
       ctx.restore();
 
-      // ----------------------------------------------------
-      // DRAW DYNAMIC CURSOR SPOTLIGHT GLOW
-      // ----------------------------------------------------
-      if (mouse.rawInitialized) {
-        const spotlightRadius = 380;
-        const cursorSpotlight = ctx.createRadialGradient(
-          mouse.rawX,
-          mouse.rawY,
-          0,
-          mouse.rawX,
-          mouse.rawY,
-          spotlightRadius
-        );
-        cursorSpotlight.addColorStop(0, "rgba(224, 75, 255, 0.28)");
-        cursorSpotlight.addColorStop(0.2, "rgba(138, 63, 252, 0.16)");
-        cursorSpotlight.addColorStop(0.5, "rgba(0, 242, 254, 0.08)");
-        cursorSpotlight.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-        ctx.save();
-        ctx.globalCompositeOperation = "screen";
-        ctx.fillStyle = cursorSpotlight;
-        ctx.beginPath();
-        ctx.arc(mouse.rawX, mouse.rawY, spotlightRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // ----------------------------------------------------
-      // DRAW FLOATING LIQUID GLASS BUBBLES
-      // ----------------------------------------------------
-      bubbles.forEach((bubble) => {
-        bubble.y -= bubble.speed;
-        const drift = Math.sin(Date.now() * bubble.frequency + bubble.phase) * bubble.amplitude * 0.05;
-        const currentX = bubble.x + drift - mouse.x * 25;
-        const currentY = bubble.y - mouse.y * 25;
-
-        if (bubble.y < -bubble.r * 2) {
-          bubble.y = height + bubble.r * 2;
-          bubble.x = Math.random() * width;
-        }
-
-        ctx.save();
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = "rgba(138, 63, 252, 0.2)";
-        
-        const glassGrad = ctx.createRadialGradient(
-          currentX - bubble.r * 0.2,
-          currentY - bubble.r * 0.2,
-          0,
-          currentX,
-          currentY,
-          bubble.r
-        );
-        glassGrad.addColorStop(0, `rgba(255, 255, 255, ${bubble.opacity * 0.1})`);
-        glassGrad.addColorStop(0.7, `rgba(138, 63, 252, ${bubble.opacity * 0.05})`);
-        glassGrad.addColorStop(1, `rgba(138, 63, 252, ${bubble.opacity * 0.25})`);
-        
-        ctx.fillStyle = glassGrad;
-        ctx.beginPath();
-        ctx.arc(currentX, currentY, bubble.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = `rgba(255, 255, 255, ${bubble.opacity * 0.4})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-
-        ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity * 0.75})`;
-        ctx.beginPath();
-        ctx.ellipse(
-          currentX - bubble.r * 0.35,
-          currentY - bubble.r * 0.35,
-          bubble.r * 0.25,
-          bubble.r * 0.12,
-          -Math.PI / 4,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-
-        ctx.fillStyle = `rgba(138, 63, 252, ${bubble.opacity * 0.35})`;
-        ctx.beginPath();
-        ctx.ellipse(
-          currentX + bubble.r * 0.4,
-          currentY + bubble.r * 0.4,
-          bubble.r * 0.15,
-          bubble.r * 0.08,
-          -Math.PI / 4,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-
-        ctx.restore();
-      });
 
       // Majestic vignette layer - Deeper rich black gradients at borders
       const vignette = ctx.createRadialGradient(

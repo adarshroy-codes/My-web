@@ -188,3 +188,14 @@ body {
   display: inline-block;
 }
 
+/* Perfect mathematical clipping matching the event horizon sphere of the black hole */
+.clipped-sphere {
+  clip-path: circle(58px at 50% 50%);
+}
+@media (min-width: 640px) {
+  .clipped-sphere {
+    clip-path: circle(78px at 50% 50%);
+  }
+}
+
+
