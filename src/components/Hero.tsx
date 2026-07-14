@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowDown, Code2, Gamepad2, ArrowRight } from "lucide-react";
+import BlackHole from "./BlackHole";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -125,6 +126,9 @@ export default function Hero() {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
+          {/* Stunning highly-realistic Gravitational Lensing Black Hole behind name */}
+          <BlackHole isHovered={isHovered} />
+
           {/* Artistic Flowing Glass Ribbons/Paths (Inspired by Image 1) */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 800 300" preserveAspectRatio="none">
             <defs>
