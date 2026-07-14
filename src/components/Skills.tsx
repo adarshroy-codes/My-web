@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Cpu, CheckCircle2, ShieldCheck } from "lucide-react";
+import GlassOrb from "./GlassOrb";
 
 interface Skill {
   name: string;
@@ -122,6 +123,14 @@ export default function Skills() {
 
   return (
     <section id="skills" className="relative min-h-screen py-24 px-4 z-10 max-w-5xl mx-auto flex flex-col justify-center">
+      {/* Immersive interactive Glass Orbs (satisfying to scroll!) */}
+      <GlassOrb
+        size={280}
+        parallaxFactor={0.22}
+        className="-left-28 sm:-left-56 bottom-16 pointer-events-none opacity-45 mix-blend-screen z-0"
+        delay={0.4}
+      />
+
       {/* Section Header */}
       <div className="mb-16">
         <div className="flex items-center gap-2 mb-2">

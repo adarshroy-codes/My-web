@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Gamepad, Play, ExternalLink, Cpu, GitBranch, Sparkles } from "lucide-react";
+import GlassOrb from "./GlassOrb";
 
 interface Project {
   id: string;
@@ -140,6 +141,20 @@ export default function Projects() {
 
   return (
     <section id="projects" className="relative min-h-screen py-24 px-4 z-10 max-w-5xl mx-auto">
+      {/* Immersive interactive Glass Orbs (satisfying to scroll!) */}
+      <GlassOrb
+        size={300}
+        parallaxFactor={0.16}
+        className="-right-20 sm:-right-52 top-10 pointer-events-none opacity-40 mix-blend-screen z-0"
+        delay={0.3}
+      />
+      <GlassOrb
+        size={220}
+        parallaxFactor={0.28}
+        className="-left-16 sm:-left-44 bottom-24 pointer-events-none opacity-45 mix-blend-screen z-0"
+        delay={0.5}
+      />
+
       {/* Section Header */}
       <div className="mb-16">
         <div className="flex items-center gap-2 mb-2">
