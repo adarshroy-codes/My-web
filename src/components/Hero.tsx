@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowDown, Code2, Gamepad2, ArrowRight } from "lucide-react";
 import BlackHole from "./BlackHole";
-import GlassOrb from "./GlassOrb";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -73,20 +72,6 @@ export default function Hero() {
       {/* High-Intensity Bright Background Auras (Neon Bloom Aura) */}
       <div className="absolute top-[35%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-[320px] sm:w-[550px] h-[320px] sm:h-[550px] rounded-full bg-gradient-to-tr from-cyber-neon/45 via-cyber-magenta/35 to-amber-500/10 filter blur-[95px] opacity-75 pointer-events-none mix-blend-screen z-0 animate-pulse" style={{ animationDuration: '8s' }} />
       <div className="absolute top-[40%] left-[45%] -translate-x-[50%] -translate-y-[50%] w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] rounded-full bg-cyan-500/20 filter blur-[110px] opacity-60 pointer-events-none mix-blend-screen z-0" />
-
-      {/* Floating glass orbs from the black hole gravitational lensing field */}
-      <GlassOrb
-        size={260}
-        parallaxFactor={0.18}
-        className="-left-20 sm:-left-40 top-[18%] pointer-events-none opacity-40 mix-blend-screen z-0"
-        delay={0.15}
-      />
-      <GlassOrb
-        size={190}
-        parallaxFactor={0.25}
-        className="-right-12 sm:-right-24 bottom-[15%] pointer-events-none opacity-45 mix-blend-screen z-0"
-        delay={0.35}
-      />
 
       {/* Floating Glass Particles */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">

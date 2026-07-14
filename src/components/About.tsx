@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Award, Layers, ShieldCheck, Flame } from "lucide-react";
-import GlassOrb from "./GlassOrb";
 
 export default function About() {
   const [imageError, setImageError] = useState(false);
@@ -37,20 +36,6 @@ export default function About() {
 
   return (
     <section id="about" className="relative min-h-screen py-24 px-4 flex flex-col justify-center z-10 max-w-5xl mx-auto">
-      {/* Immersive interactive Glass Orbs (satisfying to scroll!) */}
-      <GlassOrb
-        size={340}
-        parallaxFactor={0.25}
-        className="-left-24 sm:-left-56 top-16 pointer-events-none opacity-45 mix-blend-screen z-0"
-        delay={0.2}
-      />
-      <GlassOrb
-        size={240}
-        parallaxFactor={0.12}
-        className="-right-12 sm:-right-44 bottom-10 pointer-events-none opacity-50 mix-blend-screen z-0"
-        delay={0.4}
-      />
-
       {/* Section Header */}
       <div className="mb-16">
         <div className="flex items-center gap-2 mb-2">

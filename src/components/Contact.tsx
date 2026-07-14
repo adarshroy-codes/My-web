@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Mail, MessageSquare, MapPin, Send, Terminal, CheckCircle } from "lucide-react";
-import GlassOrb from "./GlassOrb";
+import { Mail, MessageSquare, MapPin, Send, Terminal, CheckCircle, Instagram, MessageCircle } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -50,10 +49,24 @@ export default function Contact() {
       href: "mailto:jroy8085@gmail.com",
     },
     {
+      label: "WhatsApp Comms",
+      value: "+91 98765 43210",
+      sub: "Instant secure mobile ping",
+      icon: <MessageCircle className="w-5 h-5 text-emerald-400" />,
+      href: "https://wa.me/919876543210",
+    },
+    {
+      label: "Instagram Feed",
+      value: "@rizx_.twasy",
+      sub: "Creative updates & process",
+      icon: <Instagram className="w-5 h-5 text-cyber-magenta" />,
+      href: "https://instagram.com/rizx_.twasy",
+    },
+    {
       label: "Discord Comms",
       value: "rizx_.twasy",
       sub: "Holographic voice active",
-      icon: <MessageSquare className="w-5 h-5 text-cyber-magenta" />,
+      icon: <MessageSquare className="w-5 h-5 text-sky-400" />,
       href: "https://discord.com",
     },
     {
@@ -67,20 +80,6 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative min-h-screen py-24 px-4 z-10 max-w-5xl mx-auto flex flex-col justify-center">
-      {/* Immersive interactive Glass Orbs (satisfying to scroll!) */}
-      <GlassOrb
-        size={320}
-        parallaxFactor={0.2}
-        className="-right-24 sm:-right-56 top-10 pointer-events-none opacity-45 mix-blend-screen z-0"
-        delay={0.2}
-      />
-      <GlassOrb
-        size={200}
-        parallaxFactor={0.3}
-        className="-left-14 sm:-left-40 bottom-12 pointer-events-none opacity-50 mix-blend-screen z-0"
-        delay={0.4}
-      />
-
       {/* Section Header */}
       <div className="mb-16">
         <div className="flex items-center gap-2 mb-2">

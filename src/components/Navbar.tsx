@@ -76,17 +76,17 @@ export default function Navbar({ activeSection }: NavbarProps) {
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleScrollTo(e, item.href)}
-                  className={`relative font-sans text-sm font-medium tracking-wide uppercase transition-all duration-300 py-1 ${
+                  className={`group relative font-sans text-sm font-medium tracking-wide uppercase transition-all duration-300 py-1 ${
                     isActive
-                      ? "text-cyber-magenta text-shadow-[0_0_8px_rgba(224,75,255,0.4)]"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-gradient-to-r from-[#b975ff] via-cyber-magenta to-[#f0abfc] bg-clip-text text-transparent font-bold"
+                      : "text-gray-400 hover:bg-gradient-to-r hover:from-[#b975ff] hover:via-cyber-magenta hover:to-[#f0abfc] hover:bg-clip-text hover:text-transparent"
                   }`}
                 >
                   {item.label}
                   {/* Underline Indicator */}
                   <span
                     className={`absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-cyber-neon to-cyber-magenta transition-all duration-300 ${
-                      isActive ? "w-full" : "w-0 hover:w-full"
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   />
                 </a>
@@ -126,8 +126,10 @@ export default function Navbar({ activeSection }: NavbarProps) {
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleScrollTo(e, item.href)}
-                  className={`text-base font-medium tracking-wide uppercase py-1 ${
-                    isActive ? "text-cyber-magenta pl-2 border-l-2 border-cyber-magenta" : "text-gray-400"
+                  className={`text-base font-medium tracking-wide uppercase py-1 transition-all duration-300 block ${
+                    isActive 
+                      ? "bg-gradient-to-r from-[#b975ff] via-cyber-magenta to-[#f0abfc] bg-clip-text text-transparent font-bold pl-2 border-l-2 border-cyber-magenta" 
+                      : "text-gray-400 hover:bg-gradient-to-r hover:from-[#b975ff] hover:via-cyber-magenta hover:to-[#f0abfc] hover:bg-clip-text hover:text-transparent"
                   }`}
                 >
                   {item.label}
