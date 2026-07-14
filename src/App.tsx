@@ -84,7 +84,7 @@ export default function App() {
           <div className="flex flex-col items-center md:items-start gap-1.5">
             <div className="flex items-center gap-2 font-orbitron font-black text-base tracking-wider text-white">
               <span className="text-cyber-magenta">&lt;</span>
-              <span>ADARSH</span>
+              <span>TWASY</span>
               <span className="text-cyber-neon">/&gt;</span>
             </div>
             <p className="font-mono text-[9px] text-gray-500 uppercase tracking-widest">
@@ -112,7 +112,7 @@ export default function App() {
 
           {/* Copyright notice */}
           <div className="flex flex-col items-center md:items-end gap-1 text-center md:text-right text-gray-500 font-sans text-xs">
-            <p>© {new Date().getFullYear()} ADARSH. All Rights Reserved.</p>
+            <p>© {new Date().getFullYear()} TWASY. All Rights Reserved.</p>
             <p className="text-[10px] text-gray-600 font-mono uppercase tracking-wide">
               Designed for Apple Glass & Cyberpunk HUDs
             </p>

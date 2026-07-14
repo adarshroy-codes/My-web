@@ -50,15 +50,15 @@ export default function Contact() {
     },
     {
       label: "Discord Comms",
-      value: "twasy.dev#0777",
+      value: "rizx_.twasy",
       sub: "Holographic voice active",
       icon: <MessageSquare className="w-5 h-5 text-cyber-magenta" />,
       href: "https://discord.com",
     },
     {
       label: "Sector Coordinates",
-      value: "Bengaluru, India",
-      sub: "Grid Coordinate 560001",
+      value: "Dehradun, India",
+      sub: "Grid Coordinate 248001",
       icon: <MapPin className="w-5 h-5 text-white" />,
       href: "#",
     },
