@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { Gamepad, Play, ExternalLink, Cpu, GitBranch, Sparkles } from "lucide-react";
 import GlassOrb from "./GlassOrb";
+import PrismShard from "./PrismShard";
 
 interface Project {
   id: string;
@@ -141,6 +142,20 @@ export default function Projects() {
 
   return (
     <section id="projects" className="relative min-h-screen py-24 px-4 z-10 max-w-5xl mx-auto">
+      {/* Immersive interactive Prism Shards matching the iridescent crystal aesthetic */}
+      <PrismShard
+        size={360}
+        parallaxFactor={0.22}
+        className="-left-28 sm:-left-56 top-12 opacity-85 z-0"
+        delay={0.2}
+      />
+      <PrismShard
+        size={280}
+        parallaxFactor={0.15}
+        className="-right-20 sm:-right-48 bottom-16 opacity-80 z-0"
+        delay={0.4}
+      />
+
       {/* Immersive interactive Glass Orbs (satisfying to scroll!) */}
       <GlassOrb
         size={300}

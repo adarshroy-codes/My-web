@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "motion/react";
+import React, { useState, useRef } from "react";
+import { motion, useSpring, useMotionValue } from "motion/react";
 import { Cpu, CheckCircle2, ShieldCheck } from "lucide-react";
 import GlassOrb from "./GlassOrb";
 
@@ -10,6 +10,128 @@ interface Skill {
   level: string;
   icon: React.ReactNode;
   color: string; // Tailwind color classes for glow
+}
+
+function SkillCard({ skill }: { skill: Skill; key?: string }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Smooth, high-fidelity tilt springs
+  const rotateX = useSpring(0, { stiffness: 90, damping: 18 });
+  const rotateY = useSpring(0, { stiffness: 90, damping: 18 });
+
+  // Soft scales and glowing shadows on hover
+  const scale = useSpring(1.0, { stiffness: 100, damping: 15 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    setCoords({ x, y });
+
+    const width = rect.width;
+    const height = rect.height;
+    const normX = (x / width) - 0.5;
+    const normY = (y / height) - 0.5;
+    
+    // Smoothly set rotation values
+    rotateX.set(normY * -12); // subtle up/down tilt
+    rotateY.set(normX * 12);  // subtle left/right tilt
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    scale.set(1.02);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    scale.set(1.0);
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        scale,
+        transformStyle: "preserve-3d",
+        perspective: 1200,
+      }}
+      className="relative flex flex-col gap-4 p-5 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-colors duration-500 overflow-hidden group cursor-default"
+    >
+      {/* 1. Dynamic localized spotlight glow following mouse pointer */}
+      <div
+        className="absolute -inset-px rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(140px circle at ${coords.x}px ${coords.y}px, rgba(255, 255, 255, 0.08), transparent 80%)`,
+        }}
+      />
+      
+      {/* 2. Soft background color-themed glow depending on the skill category */}
+      <div 
+        className="absolute inset-0 rounded-2xl pointer-events-none filter blur-2xl opacity-0 group-hover:opacity-25 transition-opacity duration-500 -z-10"
+        style={{
+          background: skill.color.includes("cyber-neon")
+            ? "radial-gradient(circle at center, rgba(0, 242, 254, 0.15) 0%, transparent 70%)"
+            : skill.color.includes("cyber-magenta")
+            ? "radial-gradient(circle at center, rgba(224, 75, 255, 0.15) 0%, transparent 70%)"
+            : "radial-gradient(circle at center, rgba(138, 63, 252, 0.15) 0%, transparent 70%)"
+        }}
+      />
+
+      {/* Title Details (Popped 3D forward) */}
+      <div className="flex justify-between items-center relative z-10" style={{ transform: "translateZ(15px)" }}>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-cyber-neon/30 group-hover:bg-cyber-neon/5 transition-all duration-300">
+            {skill.icon}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-orbitron text-sm font-bold text-white tracking-wider">
+              {skill.name}
+            </span>
+            <span className="font-mono text-[9px] text-gray-500 uppercase">
+              {skill.category}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-baseline gap-2">
+          <span className="font-mono text-xs text-gray-400">
+            {skill.level}
+          </span>
+          <span className="font-orbitron text-xs font-black text-cyber-magenta">
+            {skill.percent}%
+          </span>
+        </div>
+      </div>
+
+      {/* Progress slider bar track (Popped 3D forward slightly less) */}
+      <div className="w-full h-2 bg-cyber-black/80 rounded-full border border-white/5 overflow-hidden relative z-10" style={{ transform: "translateZ(8px)" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${skill.percent}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className={`h-full rounded-full bg-gradient-to-r ${skill.color} relative`}
+        >
+          {/* Glowing end pin marker */}
+          <div className="absolute right-0 top-0 bottom-0 w-2 bg-white blur-[1px]" />
+          {/* Subtle overlay sheen */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
+        </motion.div>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Skills() {
@@ -105,6 +227,19 @@ export default function Skills() {
       ),
     },
     {
+      name: "C Programming",
+      category: "Language",
+      percent: 88,
+      level: "Advanced",
+      color: "from-blue-500 to-indigo-500",
+      icon: (
+        <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 2L4 5V11C4 16.5 12 22 12 22C12 22 20 16.5 20 11V5L12 2Z" stroke="currentColor" />
+          <text x="9" y="14" fill="currentColor" fontFamily="monospace" fontSize="9" fontWeight="bold">C</text>
+        </svg>
+      ),
+    },
+    {
       name: "Java Language",
       category: "Language",
       percent: 82,
@@ -116,6 +251,20 @@ export default function Skills() {
           <path d="M 6,8 L 16,8 L 15,16 C 15,18 13,19 11,19 L 9,19 C 7,19 6,18 6,16 Z" stroke="currentColor" />
           <path d="M 16,10 C 18,10 19,11 19,12 C 19,13 18,14 16,14" stroke="currentColor" />
           <path d="M 9,5 C 9,3 10,3 10,2 M 13,5 C 13,3 14,3 14,2" stroke="currentColor" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    {
+      name: "Video Editing",
+      category: "Tooling",
+      percent: 86,
+      level: "Expert",
+      color: "from-purple-500 to-pink-500",
+      icon: (
+        <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M23 7l-7 5 7 5V7z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="6" cy="12" r="2" fill="currentColor" />
         </svg>
       ),
     },
@@ -184,52 +333,9 @@ export default function Skills() {
           </div>
 
           {/* Right Column: Interactive progress bar skills list */}
-          <div className="md:col-span-8 flex flex-col gap-6">
+          <div className="md:col-span-8 flex flex-col gap-4.5">
             {skills.map((skill) => (
-              <div key={skill.name} className="flex flex-col gap-2 group">
-                {/* Text titles */}
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="p-1.5 rounded bg-white/5 border border-white/10 group-hover:border-cyber-neon/40 group-hover:bg-cyber-neon/5 transition-all duration-300">
-                      {skill.icon}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-orbitron text-sm font-bold text-white tracking-wider">
-                        {skill.name}
-                      </span>
-                      <span className="font-mono text-[9px] text-gray-500 uppercase">
-                        {skill.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-xs text-gray-400">
-                      {skill.level}
-                    </span>
-                    <span className="font-orbitron text-xs font-black text-cyber-magenta">
-                      {skill.percent}%
-                    </span>
-                  </div>
-                </div>
-
-                {/* Glass track + Glowing dynamic progress bar */}
-                <div className="w-full h-2 bg-cyber-black/80 rounded-full border border-white/5 overflow-hidden relative">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.percent}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className={`h-full rounded-full bg-gradient-to-r ${skill.color} relative`}
-                  >
-                    {/* Glowing endpoint marker */}
-                    <div className="absolute right-0 top-0 bottom-0 w-2 bg-white blur-[1.5px]" />
-                    
-                    {/* Internal glossy sheen */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
-                  </motion.div>
-                </div>
-              </div>
+              <SkillCard key={skill.name} skill={skill} />
             ))}
           </div>
         </div>

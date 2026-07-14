@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Award, Layers, ShieldCheck, Flame } from "lucide-react";
 import GlassOrb from "./GlassOrb";
 
 export default function About() {
+  const [imageError, setImageError] = useState(false);
   const stats = [
     {
       id: "projects",
@@ -146,58 +148,132 @@ export default function About() {
               className="absolute inset-0 rounded-full border border-white/20 bg-gradient-to-tr from-cyber-purple/50 via-white/5 to-white/15 backdrop-blur-3xl shadow-[0_15px_45px_rgba(0,0,0,0.6),_inset_0_2px_4px_rgba(255,255,255,0.4),_inset_0_-10px_30px_rgba(138,63,252,0.15)] overflow-hidden flex items-center justify-center group"
             >
               {/* Inner diagonal sweeping sheen */}
-              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-10 pointer-events-none" />
 
-              {/* The "Profile Image" (Cybernetic Hologram Avatar) rendered in pristine high-contrast SVG */}
-              <svg
-                viewBox="0 0 100 100"
-                className="w-44 h-44 sm:w-48 sm:h-48 drop-shadow-[0_0_15px_rgba(138,63,252,0.4)] opacity-85 group-hover:scale-105 transition-transform duration-500"
-                fill="none"
-              >
-                {/* Microchip tracks in background of orb */}
-                <path
-                  d="M 10,50 L 30,50 L 40,40 L 40,10 M 90,50 L 70,50 L 60,60 L 60,90"
-                  stroke="rgba(138, 63, 252, 0.25)"
-                  strokeWidth="1"
-                  strokeDasharray="3 3"
+              {/* The "Profile Image" (Local image with high-fidelity vector illustration fallback) */}
+              {!imageError ? (
+                <img
+                  src="https://collective-blue-zlmyd4uz.edgeone.dev/global__000054e2ea70026d_0000015f_2_000054e2ea70026d_0000000000000001__53b75be840766053_000002114a3018bc_000656907285899f.jpg"
+                  alt="Owner Profile"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImageError(true)}
+                  className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                 />
+              ) : (
+                <svg
+                  viewBox="0 0 100 100"
+                  className="w-full h-full p-2 drop-shadow-[0_0_15px_rgba(138,63,252,0.45)] group-hover:scale-105 transition-transform duration-700 ease-out"
+                  fill="none"
+                >
+                  {/* Cyber HUD elements and grid */}
+                  <circle cx="50" cy="50" r="45" stroke="rgba(138, 63, 252, 0.2)" strokeWidth="0.5" strokeDasharray="2 2" />
+                  <circle cx="50" cy="50" r="40" stroke="rgba(224, 75, 255, 0.15)" strokeWidth="0.5" />
+                  
+                  {/* Ambient Backlight Glow */}
+                  <circle cx="50" cy="45" r="28" fill="url(#avatar-glow)" opacity="0.35" />
 
-                {/* Abstract Glowing Head Chassis */}
-                <circle cx="50" cy="35" r="16" stroke="url(#gamedev-grad)" strokeWidth="1.5" />
-                
-                {/* Cyber HUD elements around head */}
-                <circle cx="50" cy="35" r="22" stroke="rgba(224, 75, 255, 0.3)" strokeWidth="0.75" strokeDasharray="5 15" className="animate-spin" style={{ transformOrigin: '50px 35px', animationDuration: '20s' }} />
-                <path d="M 38,15 A 25 25 0 0 1 62,15" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-                
-                {/* Cyber Glasses / Visor */}
-                <rect x="40" y="31" width="20" height="6" rx="2" fill="rgba(224, 75, 255, 0.2)" stroke="url(#gamedev-grad-magenta)" strokeWidth="1" />
-                <line x1="42" y1="34" x2="58" y2="34" stroke="#ffffff" strokeWidth="0.5" strokeDasharray="1 1" />
+                  {/* Cyber Track Lines */}
+                  <path d="M 15,50 L 30,50 L 35,45 M 85,50 L 70,50 L 65,55" stroke="rgba(224, 75, 255, 0.25)" strokeWidth="0.75" strokeDasharray="3 3" />
 
-                {/* Chest & Shoulder Chassis */}
-                <path
-                  d="M 28,78 C 28,68 36,60 44,58 L 56,58 C 64,60 72,68 72,78"
-                  stroke="url(#gamedev-grad)"
-                  strokeWidth="1.5"
-                />
-                
-                {/* Inner power core node */}
-                <circle cx="50" cy="62" r="3" fill="#E04BFF" className="animate-pulse" />
-                
-                {/* Linear Gradients definitions */}
-                <defs>
-                  <linearGradient id="gamedev-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#8A3FFC" />
-                    <stop offset="100%" stopColor="#ffffff" />
-                  </linearGradient>
-                  <linearGradient id="gamedev-grad-magenta" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#E04BFF" />
-                    <stop offset="100%" stopColor="#8A3FFC" />
-                  </linearGradient>
-                </defs>
-              </svg>
+                  {/* Shoulder/Jacket Body */}
+                  <path
+                    d="M 22,82 C 22,70 30,62 40,60 L 45,63 L 50,65 L 55,63 L 60,60 C 70,62 78,70 78,82"
+                    fill="#121118"
+                    stroke="url(#jacket-glow)"
+                    strokeWidth="1.5"
+                  />
+                  
+                  {/* Inner Shirt (Deep Purple/Magenta under jacket) */}
+                  <path d="M 43,62 L 50,72 L 57,62 C 54,64 46,64 43,62 Z" fill="#4a154b" opacity="0.8" />
+                  <path d="M 43,62 L 50,72 L 57,62" stroke="rgba(224, 75, 255, 0.4)" strokeWidth="0.75" />
+
+                  {/* Zipper details */}
+                  <line x1="50" y1="72" x2="50" y2="85" stroke="#444" strokeWidth="1" />
+                  <path d="M 48,71 L 52,71 L 50,75 Z" fill="#999" />
+                  {/* Circular zipper ring matching their jacket */}
+                  <circle cx="50" cy="78" r="2.5" stroke="url(#ring-glow)" strokeWidth="1.2" fill="#121118" />
+
+                  {/* Face & Head */}
+                  {/* Neck */}
+                  <rect x="44" y="50" width="12" height="15" rx="2" fill="#8d5b4c" />
+                  <path d="M 44,57 C 47,61 53,61 56,57" fill="#724437" opacity="0.4" />
+                  
+                  {/* Head shape - South Asian warm tan skin tone */}
+                  <path d="M 36,40 C 36,28 42,24 50,24 C 58,24 64,28 64,40 C 64,48 58,54 50,54 C 42,54 36,48 36,40 Z" fill="#a06a58" />
+                  
+                  {/* Ears */}
+                  <circle cx="35.5" cy="39" r="3.5" fill="#8d5b4c" />
+                  <circle cx="64.5" cy="39" r="3.5" fill="#8d5b4c" />
+
+                  {/* Facial Features (Nose, Mouth, Eyes) */}
+                  {/* Eyes */}
+                  <ellipse cx="43" cy="37" rx="2" ry="1.2" fill="#fff" />
+                  <circle cx="43" cy="37" r="1" fill="#1c110c" />
+                  <ellipse cx="57" cy="37" rx="2" ry="1.2" fill="#fff" />
+                  <circle cx="57" cy="37" r="1" fill="#1c110c" />
+                  
+                  {/* Eyebrows */}
+                  <path d="M 40,33 C 42,32 45,33 46,34" stroke="#1c110c" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M 60,33 C 58,32 55,33 54,34" stroke="#1c110c" strokeWidth="1.5" strokeLinecap="round" />
+
+                  {/* Glasses (Modern rectangular matching their frames) */}
+                  <rect x="38" y="33" width="10" height="8" rx="1.5" stroke="#111115" strokeWidth="1.5" fill="rgba(138, 63, 252, 0.15)" />
+                  <rect x="52" y="33" width="10" height="8" rx="1.5" stroke="#111115" strokeWidth="1.5" fill="rgba(138, 63, 252, 0.15)" />
+                  <line x1="48" y1="36" x2="52" y2="36" stroke="#111115" strokeWidth="1.5" />
+                  {/* Glass reflection sheen */}
+                  <line x1="39" y1="39" x2="43" y2="35" stroke="rgba(255,255,255,0.4)" strokeWidth="0.75" />
+                  <line x1="53" y1="39" x2="57" y2="35" stroke="rgba(255,255,255,0.4)" strokeWidth="0.75" />
+
+                  {/* Nose & Mouth */}
+                  <path d="M 49,41 L 50,44 L 51,41" stroke="#724437" strokeWidth="1" strokeLinecap="round" />
+                  {/* Soft subtle mustache matching their photo */}
+                  <path d="M 46,47 C 48,46.5 52,46.5 54,47" stroke="#22110c" strokeWidth="1.2" strokeLinecap="round" opacity="0.8" />
+                  {/* Mouth */}
+                  <path d="M 46,49.5 C 48,51 52,51 54,49.5" stroke="#724437" strokeWidth="1.5" strokeLinecap="round" />
+
+                  {/* Black Curly/Wavy Hair */}
+                  <path d="M 34,42 C 32,38 32,32 35,28 C 38,24 42,21 47,21 C 53,21 58,22 62,26 C 66,30 68,36 66,42 C 65,45 62,45 61,42 C 60,37 57,32 50,32 C 43,32 40,37 39,42 C 38,45 35,45 34,42 Z" fill="#14121a" />
+                  
+                  {/* Detailed curly strands/bumps overlapping the head */}
+                  <circle cx="37" cy="27" r="4.5" fill="#14121a" />
+                  <circle cx="42" cy="23" r="5" fill="#14121a" />
+                  <circle cx="49" cy="21" r="5.5" fill="#14121a" />
+                  <circle cx="56" cy="22" r="5" fill="#14121a" />
+                  <circle cx="61" cy="26" r="4.5" fill="#14121a" />
+                  <circle cx="64" cy="32" r="4" fill="#14121a" />
+                  
+                  {/* Forehead curls/fringe overlapping the forehead nicely */}
+                  <path d="M 38,28 C 40,29 42,28 43,30 C 45,31 44,33 46,31 C 48,29 49,31 51,29 C 53,30 54,32 56,29 C 58,31 60,29 62,31" stroke="#14121a" strokeWidth="3" strokeLinecap="round" />
+                  <circle cx="41" cy="29" r="2.5" fill="#14121a" />
+                  <circle cx="46" cy="30" r="2.5" fill="#14121a" />
+                  <circle cx="52" cy="29" r="3" fill="#14121a" />
+                  <circle cx="58" cy="30" r="2.5" fill="#14121a" />
+
+                  {/* Linear Gradients definitions */}
+                  <defs>
+                    <radialGradient id="avatar-glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#8A3FFC" />
+                      <stop offset="100%" stopColor="#E04BFF" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="jacket-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8A3FFC" stopOpacity="0.8" />
+                      <stop offset="50%" stopColor="#121118" />
+                      <stop offset="100%" stopColor="#E04BFF" stopOpacity="0.8" />
+                    </linearGradient>
+                    <linearGradient id="ring-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#E04BFF" />
+                      <stop offset="100%" stopColor="#8A3FFC" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              )}
+
+              {/* Futuristic overlay cyber gradients */}
+              <div className="absolute inset-0 bg-gradient-to-t from-cyber-purple/30 to-transparent mix-blend-color-dodge opacity-60 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_30%,_rgba(5,1,20,0.5)_100%)] pointer-events-none" />
 
               {/* Top reflection highlight layer (gives physical crystal depth) */}
-              <div className="absolute top-2 left-6 right-6 h-12 rounded-full bg-gradient-to-b from-white/25 to-transparent filter blur-[1px] pointer-events-none" />
+              <div className="absolute top-2 left-6 right-6 h-12 rounded-full bg-gradient-to-b from-white/25 to-transparent filter blur-[1px] pointer-events-none z-10" />
               <div className="absolute bottom-2 left-10 right-10 h-6 rounded-full bg-gradient-to-t from-cyber-neon/15 to-transparent filter blur-[2px] pointer-events-none" />
             </div>
           </div>

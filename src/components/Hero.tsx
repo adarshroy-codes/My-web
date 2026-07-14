@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowDown, Code2, Gamepad2, ArrowRight } from "lucide-react";
 import BlackHole from "./BlackHole";
 import GlassOrb from "./GlassOrb";
+import PrismShard from "./PrismShard";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -86,6 +87,20 @@ export default function Hero() {
         parallaxFactor={0.25}
         className="-right-12 sm:-right-24 bottom-[15%] pointer-events-none opacity-45 mix-blend-screen z-0"
         delay={0.35}
+      />
+
+      {/* Floating Prismatic crystal shards */}
+      <PrismShard
+        size={300}
+        parallaxFactor={0.12}
+        className="-left-24 sm:-left-48 top-[40%] opacity-80 z-0"
+        delay={0.25}
+      />
+      <PrismShard
+        size={220}
+        parallaxFactor={0.22}
+        className="-right-16 sm:-right-36 top-[25%] opacity-75 z-0"
+        delay={0.45}
       />
 
       {/* Floating Glass Particles */}

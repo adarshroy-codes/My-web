@@ -59,7 +59,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
             <span className="text-cyber-magenta transition-all duration-300 group-hover:scale-110">
               &lt;
             </span>
-            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent group-hover:text-white transition-all duration-300">
+            <span className="animate-slow-shimmer transition-all duration-300">
               TWASY
             </span>
             <span className="text-cyber-neon transition-all duration-300 group-hover:scale-110">
